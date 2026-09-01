@@ -21,14 +21,11 @@ class VIPManager:
         self.load_vip_contacts()
 
     def _normalize_phone(self, phone: str) -> str:
-        """Removes spaces, hyphens, and standardizes to 10-digit or E.164."""
-        cleaned = re.sub(r"[^\d+]", "", phone)
-        if cleaned.startswith("+91") and len(cleaned) == 13:
-            return cleaned[3:]
-        elif cleaned.startswith("91") and len(cleaned) == 12:
-            return cleaned[2:]
-        elif cleaned.startswith("0") and len(cleaned) == 11:
-            return cleaned[1:]
+        """Removes spaces, hyphens, and standardizes to 10-digit canonical phone number."""
+        cleaned = re.sub(r"[^\d]", "", phone)
+        # Extract last 10 digits for Indian carrier agnostic matching
+        if len(cleaned) >= 10:
+            return cleaned[-10:]
         return cleaned
 
     def load_vip_contacts(self):

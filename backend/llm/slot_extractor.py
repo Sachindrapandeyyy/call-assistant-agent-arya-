@@ -69,16 +69,25 @@ class SlotExtractor:
         if any(w in lower for w in ["urgent", "emergency", "zaroori", "bahut urgent", "इमरजेंसी", "जरूरी"]):
             slots["urgency"] = "Urgent"
 
-        # 4. Dates & Times Extraction
+        # 4. Dates & Times Extraction (Devanagari numerals & time of day)
         dt_parts = []
         if any(w in lower for w in ["kal", "tomorrow", "कल"]):
             dt_parts.append("Kal / Tomorrow")
         if any(w in lower for w in ["aaj", "today", "आज"]):
             dt_parts.append("Aaj / Today")
+        if any(w in lower for w in ["parso", "day after tomorrow", "परसों"]):
+            dt_parts.append("Parso / Day after tomorrow")
         
-        time_match = re.search(r"(\d{1,2}(?::\d{2})?\s*(?:baje|am|pm|बजे))", lower)
-        if time_match:
-            dt_parts.append(time_match.group(1))
+        # Match time with periods (e.g. shaam 6 baje, subah 11:00 am, शाम ६ बजे)
+        # Normalize Devanagari numerals to ASCII
+        dev_digits = str.maketrans("०१२३४५६७८९", "0123456789")
+        norm_text = lower.translate(dev_digits)
+
+        time_match = re.search(r"((?:subah|shaam|dopahar|raat|सुबह|शाम|दोपहर|रात)\s+)?(\d{1,2}(?::\d{2})?\s*(?:baje|am|pm|बजे|o'clock)?)", norm_text)
+        if time_match and (time_match.group(1) or "baje" in time_match.group(2) or "am" in time_match.group(2) or "pm" in time_match.group(2) or "बजे" in time_match.group(2)):
+            matched_time = f"{time_match.group(1) or ''}{time_match.group(2)}".strip()
+            if matched_time:
+                dt_parts.append(matched_time)
         
         if dt_parts:
             slots["important_dates_times"] = " ".join(dt_parts)

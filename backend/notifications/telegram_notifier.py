@@ -6,6 +6,7 @@ directly to Sachindra's Telegram at ₹0 cost.
 
 import json
 import logging
+import html
 from pathlib import Path
 from typing import Dict, Any, Optional
 import httpx
@@ -46,25 +47,26 @@ class TelegramNotifier:
         duration_sec: float = 0.0,
         audio_path: Optional[Path] = None,
     ) -> bool:
-        """Sends a structured call summary card to Telegram."""
+        """Sends a structured call summary card to Telegram with safe HTML entity escaping."""
         if not self.is_configured():
             logger.info("Telegram Bot token/chat_id not configured in .env. Skipping notification.")
             return False
 
-        caller_name = summary.get("caller_name", "Unknown")
-        category = summary.get("category", "General")
-        urgency = summary.get("urgency", "Low")
-        reason = summary.get("reason_for_call", "N/A")
-        message = summary.get("message", "N/A")
+        caller_name = html.escape(str(summary.get("caller_name", "Unknown")))
+        caller_num = html.escape(str(caller_number))
+        category = html.escape(str(summary.get("category", "General")))
+        urgency = html.escape(str(summary.get("urgency", "Low")))
+        reason = html.escape(str(summary.get("reason_for_call", "N/A")))
+        message = html.escape(str(summary.get("message", "N/A")))
         callback = "Yes (Callback Requested)" if summary.get("callback_requested") else "No"
-        action = summary.get("follow_up_action_required", "None")
+        action = html.escape(str(summary.get("follow_up_action_required", "None")))
 
         urgency_emoji = "🚨" if urgency in ["High", "Urgent"] else "📞"
 
         text = (
             f"{urgency_emoji} <b>AI CALL SUMMARY — Sachindra</b>\n"
             f"━━━━━━━━━━━━━━━━━━━━\n"
-            f"👤 <b>Caller:</b> {caller_name} ({caller_number})\n"
+            f"👤 <b>Caller:</b> {caller_name} ({caller_num})\n"
             f"🏷️ <b>Category:</b> {category}\n"
             f"⚡ <b>Urgency:</b> {urgency}\n"
             f"⏱️ <b>Duration:</b> {duration_sec:.1f}s\n"
