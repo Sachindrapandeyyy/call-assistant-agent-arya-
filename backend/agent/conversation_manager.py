@@ -188,58 +188,76 @@ class ConversationManager:
         logger.info(f"[CALL CONCLUDED] Transcript turns: {len(self.dialogue_history)}")
 
         summary_data = self.state_machine.end_call()
+        has_caller_speech = any(d.get("role") == "user" and len(d.get("content", "").strip()) > 1 for d in self.dialogue_history)
 
-        if self.dialogue_history and ollama_client.is_available():
+        llm_summary = {}
+        if has_caller_speech and ollama_client.is_available():
             try:
                 llm_summary = ollama_client.generate_summary(transcript_str)
-                # Merge LLM summary with deterministic state machine slots
-                merged_summary = {
-                    "caller_name": summary_data.get("caller_name") or llm_summary.get("caller_name", "Unknown"),
-                    "caller_phone": self.caller_number,
-                    "company_organization": summary_data.get("company_organization") or llm_summary.get("category", "Unknown"),
-                    "category": summary_data.get("relationship") or llm_summary.get("category", "General"),
-                    "urgency": summary_data.get("urgency") or llm_summary.get("urgency", "Medium"),
-                    "reason_for_call": summary_data.get("reason_for_call") or llm_summary.get("reason_for_call", "N/A"),
-                    "message": summary_data.get("message") or llm_summary.get("message", "N/A"),
-                    "callback_requested": summary_data.get("callback_requested") if summary_data.get("callback_requested") is not None else llm_summary.get("callback_requested", False),
-                    "important_dates_or_times": summary_data.get("important_dates_times") or llm_summary.get("important_dates_or_times", "None"),
-                    "follow_up_action_required": llm_summary.get("follow_up_action_required", "Inform Sachindra sir")
-                }
+            except Exception as ex:
+                logger.error(f"Error generating LLM summary: {ex}")
+        else:
+            llm_summary = {
+                "caller_name": "Unknown",
+                "category": "Unknown",
+                "urgency": "Low",
+                "reason_for_call": "Missed / Dropped Call",
+                "message": "Caller disconnected without speaking.",
+                "callback_requested": False,
+                "important_dates_or_times": "None",
+                "follow_up_action_required": "None"
+            }
 
-                logger.info(f"[CALL SUMMARY] Caller: {merged_summary['caller_name']} | Urgency: {merged_summary['urgency']} | Reason: {merged_summary['reason_for_call']}")
+        # Strict Anti-Hallucination Name Sanitizer
+        raw_name = summary_data.get("caller_name") or llm_summary.get("caller_name", "Unknown")
+        if any(bad in raw_name.lower() for bad in ["sachindra", "arya", "ai", "none", "null", "caller"]):
+            raw_name = "Unknown"
 
-                if self.session_id:
-                    try:
-                        db.update_session_state(
-                            self.session_id,
-                            "ENDED",
-                            summary=json.dumps(merged_summary, ensure_ascii=False),
-                            transcript=transcript_str,
-                            processing_status="COMPLETED"
-                        )
-                        logger.info(f"Persisted structured summary to SQLite for session {self.session_id}")
-                        safe_broadcast("call_summary_updated", {
-                            "session_id": self.session_id,
-                            "caller_number": self.caller_number,
-                            "summary": merged_summary
-                        })
-                    except Exception as db_err:
-                        logger.warning(f"Error saving summary to database: {db_err}")
+        # Merge LLM summary with deterministic state machine slots
+        merged_summary = {
+            "caller_name": raw_name,
+            "caller_phone": self.caller_number,
+            "company_organization": summary_data.get("company_organization") or llm_summary.get("company_organization") or llm_summary.get("category", "Unknown"),
+            "category": summary_data.get("relationship") or llm_summary.get("category", "General"),
+            "urgency": summary_data.get("urgency") or llm_summary.get("urgency", "Low"),
+            "reason_for_call": summary_data.get("reason_for_call") or llm_summary.get("reason_for_call", "N/A"),
+            "message": summary_data.get("message") or llm_summary.get("message", "N/A"),
+            "callback_requested": summary_data.get("callback_requested") if summary_data.get("callback_requested") is not None else llm_summary.get("callback_requested", False),
+            "important_dates_or_times": summary_data.get("important_dates_times") or llm_summary.get("important_dates_or_times", "None"),
+            "follow_up_action_required": llm_summary.get("follow_up_action_required", "Inform Sachindra sir")
+        }
 
-                try:
-                    from backend.notifications.telegram_notifier import telegram_notifier
-                    master_rec = settings.RECORDINGS_DIR / self.session_id / f"call_full_{self.session_id}.wav" if self.session_id else None
-                    telegram_notifier.send_call_summary(
-                        caller_number=self.caller_number,
-                        summary=merged_summary,
-                        transcript=transcript_str,
-                        audio_path=master_rec if master_rec and master_rec.exists() else None
-                    )
-                except Exception as e:
-                    logger.debug(f"Telegram notification dispatch note: {e}")
+        logger.info(f"[CALL SUMMARY] Caller: {merged_summary['caller_name']} | Urgency: {merged_summary['urgency']} | Reason: {merged_summary['reason_for_call']}")
 
-            except Exception as e:
-                logger.error(f"Error generating structured summary: {e}")
+        if self.session_id:
+            try:
+                db.update_session_state(
+                    self.session_id,
+                    "ENDED",
+                    summary=json.dumps(merged_summary, ensure_ascii=False),
+                    transcript=transcript_str,
+                    processing_status="COMPLETED"
+                )
+                logger.info(f"Persisted structured summary to SQLite for session {self.session_id}")
+                safe_broadcast("call_summary_updated", {
+                    "session_id": self.session_id,
+                    "caller_number": self.caller_number,
+                    "summary": merged_summary
+                })
+            except Exception as db_err:
+                logger.warning(f"Error saving summary to database: {db_err}")
+
+        try:
+            from backend.notifications.telegram_notifier import telegram_notifier
+            master_rec = settings.RECORDINGS_DIR / self.session_id / f"call_full_{self.session_id}.wav" if self.session_id else None
+            telegram_notifier.send_call_summary(
+                caller_number=self.caller_number,
+                summary=merged_summary,
+                transcript=transcript_str,
+                audio_path=master_rec if master_rec and master_rec.exists() else None
+            )
+        except Exception as e:
+            logger.debug(f"Telegram notification dispatch note: {e}")
 
         self.state_machine.state = CallState.IDLE
 

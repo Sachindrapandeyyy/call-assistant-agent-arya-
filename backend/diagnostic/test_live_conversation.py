@@ -1,78 +1,37 @@
-"""
-AI Call Assistant - Full Live Conversation Diagnostic
+﻿import sys, os, json
+sys.path.insert(0, os.path.abspath("."))
+sys.stdout.reconfigure(encoding='utf-8')
 
-Tests the complete end-to-end conversation loop:
-Phone Call -> WASAPI Loopback -> VAD -> faster-whisper -> Qwen2.5-3B -> Female Indian TTS -> VB-Cable -> Caller.
+from backend.agent.dialogue_engine import dialogue_engine
+from backend.llm.slot_extractor import slot_extractor
+from backend.llm.ollama_client import ollama_client
+from backend.agent.state_machine import ConversationStateMachine
 
-Usage:
-  1. Call is ACTIVE in Phone Link.
-  2. Run:
-     python backend/diagnostic/test_live_conversation.py
-"""
+dialogue_engine.reset('+919478437479')
+sm = ConversationStateMachine()
+sm.start_call('test_audit_sess', '+919478437479')
 
-import sys
-import time
-from pathlib import Path
+turns = [
+    'Kal shaam 6 baje meeting ke liye milna hai',
+    'Yes callback chahiye',
+    'Aur koi baat nahi hai call disconnect kar do'
+]
 
-# Set UTF-8 encoding for Windows console
-if sys.platform == "win32":
-    try:
-        sys.stdout.reconfigure(encoding="utf-8")
-        sys.stderr.reconfigure(encoding="utf-8")
-    except Exception:
-        pass
+history = []
+for t in turns:
+    print('=' * 60)
+    print('CALLER:', t)
+    slots = slot_extractor._fast_rule_extract(t)
+    sm.apply_extracted_entities(slots)
+    history.append({'role': 'user', 'content': t})
+    reply, should_hangup = dialogue_engine.process_turn(t, history)
+    history.append({'role': 'assistant', 'content': reply})
+    print(f'AI: \"{reply}\" | Hangup: {should_hangup}')
 
-# Add project root to sys.path
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
+print('=' * 60)
+print('FINAL STATE MACHINE SLOTS:', json.dumps(sm.slots.__dict__, indent=2, default=str))
 
-from backend.config import settings
-from backend.audio.device_manager import DeviceManager
-from backend.audio.session_manager import session_manager
-
-def main():
-    print()
-    print("=" * 70)
-    print("  AI PERSONAL CALL ASSISTANT — FULL CONVERSATION TEST")
-    print("=" * 70)
-
-    loopback, uplink = DeviceManager.get_devices()
-    print(f"  Downlink (Capture): {loopback.name if loopback else '[FAIL] Not Found'}")
-    print(f"  Uplink (VB-Cable):  {uplink.name if uplink else '[FAIL] Not Found'}")
-    print()
-
-    if not loopback or not uplink:
-        print("  [ERROR] Audio devices not ready.")
-        sys.exit(1)
-
-    print("  --> INSTRUCTIONS:")
-    print("      1. Keep the Phone Link call ACTIVE with the caller on the line.")
-    print("      2. Press ENTER to simulate call answer.")
-    print("      3. The AI Receptionist will speak the initial greeting to the caller:")
-    print("         'Namaste, main Sachindra ki personal assistant hoon...'")
-    print("      4. Speak back to the AI in Hindi, Hinglish, or English.")
-    print("      5. Have a natural 30-45 second conversation (e.g. leave a message).")
-    print("      6. Press CTRL+C when you want to hang up.")
-    print()
-
-    input("  Press ENTER to start the live conversation...")
-
-    test_caller = "+91-TEST-CONVERSATION"
-    print("\n  [CALL START] Answering call and starting AI receptionist...", flush=True)
-    session_manager.handle_telephony_event("incoming_call", {"number": test_caller})
-    time.sleep(0.5)
-    session_manager.handle_telephony_event("call_answered", {"number": test_caller})
-
-    print("\n  --> AI is actively in conversation with the caller. (Press CTRL+C to end call) <--\n")
-
-    try:
-        while True:
-            time.sleep(1.0)
-    except KeyboardInterrupt:
-        print("\n\n  [CALL TERMINATION] Ending call session...")
-        session_manager.handle_telephony_event("call_ended", {"number": test_caller, "duration": 35.0})
-        print("\n  Session closed. Check above for full transcript and summary.")
-
-if __name__ == "__main__":
-    main()
+# Summary test
+transcript_str = '\n'.join([f"{h['role']}: {h['content']}" for h in history])
+summary = ollama_client.generate_summary(transcript_str)
+print('GENERATED SUMMARY JSON:\n', json.dumps(summary, indent=2))
