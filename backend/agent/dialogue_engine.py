@@ -52,15 +52,21 @@ class DialogueEngine:
         if not raw_text or len(raw_text) < 2:
             return ("Hello? Kya aap mujhe sun pa rahe hain?", False)
 
-        # 1. Check for Immediate Exit / Hangup Intent (with negation protection)
+        # 1. Check for Immediate Exit / Hangup Intent (Devanagari + Romanized + English)
         exit_phrases = [
             "bye", "alvida", "thank you", "thanks", "bas itna hi", "cut the call", "call cut",
             "rakhta hoon", "rakhti hoon", "kuch nahi", "no that is all", "no that's all",
-            "theek hai bye", "aur kuch nahi", "ok bye", "bye bye", "no thanks",
-            "disconnect kar do", "call disconnect kar do", "call kaat do"
+            "theek hai bye", "aur kuch nahi", "ok bye", "bye bye", "no thanks", "hang up",
+            "disconnect kar do", "call disconnect kar do", "call kaat do", "call cut kar do",
+            "cut kar do", "phone rakh do", "disconnect", "call disconnect", "kaat do", "phone kaat",
+            "kaat do phone", "phone cut",
+            # Devanagari Hindi exit phrases
+            "कट", "काट", "काट दो", "काटो", "कट कर", "कटकल", "कॉल कट", "कॉल काटो", "कॉल काट",
+            "डिस्कनेक्ट", "दिसकनेख", "दिसकनेक्ट", "दिसकनेक्ट कर", "रखो", "रख दो", "बाय",
+            "अलविदा", "धन्यवाद", "शुक्रिया", "बस", "और कुछ नहीं", "कुछ नहीं", "कॉल रख"
         ]
-        is_negated = any(neg in lower for neg in ["mat karo", "mat kato", "don't", "dont", "ruko", "wait", "nahi tum"])
-        if not is_negated and any(w in lower for w in exit_phrases) and (self.callback_asked or len(dialogue_history) >= 4):
+        is_negated = any(neg in lower for neg in ["mat karo", "mat kato", "don't", "dont", "ruko", "wait", "nahi tum", "मत करो", "मत काटो"])
+        if not is_negated and any(w in lower for w in exit_phrases):
             self.is_concluded = True
             return (
                 "Theek hai ji! Main yeh message Sachindra sir tak zaroor pahuncha dungi. Main call ab disconnect kar rahi hoon. Have a wonderful day, bye-bye!",
@@ -120,9 +126,9 @@ class DialogueEngine:
             "EMOTIONAL INTELLIGENCE GUIDELINES:\n"
             "- If Category is 'urgent': Reassure them with high priority.\n"
             "- If Category is 'recruiter': Be sharp, courteous, and note exact interview details.\n"
-            "- If Category is 'friend': Be warm, sweet, and lively.\n"
-            "- Speak naturally with organic micro-fillers ('Arey', 'Haanji', 'Achha', 'Ji bilkul').\n"
-            "- Strictly 1-2 punchy Romanized Hinglish sentences. Never repeat past lines."
+            "- If Category is 'friend': Be warm, sweet, and polite.\n"
+            "- Speak naturally, politely, and directly. Strictly 1-2 crisp Romanized Hinglish sentences.\n"
+            "- NEVER start every reply with 'Areyji' or 'Arey'. Vary your sentences naturally."
         )
 
         try:
