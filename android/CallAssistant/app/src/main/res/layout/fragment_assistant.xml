@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_galaxy_gradient">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:paddingTop="28dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aura AI"
+            android:textColor="#C77DFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Personal AI Assistant"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 0. Interactive Direct Chat with Aura AI -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_galaxy_card"
+            android:padding="16dp"
+            android:elevation="4dp"
+            android:layout_marginBottom="14dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="💬 Talk with Aura AI"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Qwen2.5 Local"
+                    android:textColor="#00F59B"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
+
+                <EditText
+                    android:id="@+id/etChatQuery"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_weight="1"
+                    android:hint="Ask: 'Aaj kis kis ki call aayi thi?'"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#9D8BB8"
+                    android:background="#160C30"
+                    android:paddingHorizontal="14dp"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btnSendChat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="46dp"
+                    android:text="Ask"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:backgroundTint="#7B2CBF"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
+
+            <!-- AI Response Display -->
+            <LinearLayout
+                android:id="@+id/layoutChatReply"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_galaxy_summary_pill"
+                android:padding="12dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tvChatReply"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#E0AAFF"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="3dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 1. Engine Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_galaxy_card"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:elevation="4dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_galaxy_avatar_nebula"
+                android:gravity="center"
+                android:text="⚡"
+                android:textSize="24sp"
+                android:layout_marginEnd="14dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Local GPU Voice Node"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lenovo LOQ RTX 4050 • Whisper + Qwen"
+                    android:textColor="#00F59B"
+                    android:textSize="13sp"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 2. Connection Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_galaxy_card"
+            android:padding="16dp"
+            android:elevation="4dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PC Backend Signaling (Wi-Fi)"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <EditText
+                    android:id="@+id/etHost"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="2"
+                    android:text="192.168.29.205"
+                    android:hint="Laptop IP"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#9D8BB8"
+                    android:background="#160C30"
+                    android:paddingHorizontal="12dp"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/etPort"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:text="8000"
+                    android:hint="Port"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#9D8BB8"
+                    android:background="#160C30"
+                    android:paddingHorizontal="12dp"
+                    android:textSize="14sp"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvWsStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Status: ❌ DISCONNECTED"
+                android:textColor="#FF4D6D"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btnConnectWs"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Connect to Laptop AI"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:backgroundTint="#7B2CBF" />
+        </LinearLayout>
+
+        <!-- 3. Auto-Answer Settings Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_galaxy_card"
+            android:padding="16dp"
+            android:elevation="4dp"
+            android:layout_marginBottom="80dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Auto-Answer Automation"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchAutoAnswer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Auto-Answer Calls via AI"
+                android:textColor="#FFFFFF"
+                android:checked="true"
+                android:textSize="15sp"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Answer Delay:"
+                    android:textColor="#C77DFF"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/etDelay"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:text="4000"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#9D8BB8"
+                    android:background="#160C30"
+                    android:paddingHorizontal="12dp"
+                    android:textSize="14sp"
+                    android:layout_marginHorizontal="8dp" />
+
+                <Button
+                    android:id="@+id/btnSaveDelay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:text="Save"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#7B2CBF" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

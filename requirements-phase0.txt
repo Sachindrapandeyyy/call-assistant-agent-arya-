@@ -1,0 +1,6 @@
+# AI Call Assistant - Phase 0 Audio Diagnostic
+# Requirements for the diagnostic scripts
+
+sounddevice>=0.4.6
+numpy>=1.24.0
+scipy>=1.10.0

@@ -1,0 +1,14 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Deep Space Galaxy Theme -->
+    <style name="Theme.CallAssistant" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#9D4EDD</item>
+        <item name="colorPrimaryVariant">#7B2CBF</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSecondary">#00F59B</item>
+        <item name="colorSecondaryVariant">#00C853</item>
+        <item name="colorOnSecondary">#0A0618</item>
+        <item name="android:statusBarColor">#0A0618</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowBackground">#0A0618</item>
+    </style>
+</resources>

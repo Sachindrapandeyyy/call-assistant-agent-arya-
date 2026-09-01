@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_galaxy_card"
+    android:padding="16dp"
+    android:layout_marginBottom="12dp"
+    android:elevation="4dp">
+
+    <!-- Top Row: Avatar, Name, Time, Call Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Cosmic Gradient Avatar Circle -->
+        <TextView
+            android:id="@+id/tvAvatarInitial"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:background="@drawable/bg_galaxy_avatar_nebula"
+            android:gravity="center"
+            android:text="S"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="14dp" />
+
+        <!-- Name & Details -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvCallerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sachindra"
+                android:textColor="#FFFFFF"
+                android:textSize="17sp"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvCallDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Incoming • 10:45 AM • 45s"
+                android:textColor="#C77DFF"
+                android:textSize="13sp"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <!-- Time -->
+        <TextView
+            android:id="@+id/tvCallTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10:45 AM"
+            android:textColor="#A799B7"
+            android:textSize="13sp"
+            android:layout_marginEnd="10dp" />
+
+        <!-- Quick Call Action Button -->
+        <ImageView
+            android:id="@+id/btnInfo"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:padding="8dp"
+            android:src="@android:drawable/ic_menu_call"
+            android:tint="#00F59B"
+            android:background="@drawable/bg_galaxy_keypad_button" />
+    </LinearLayout>
+
+    <!-- Cosmic AI Call Summary Box -->
+    <LinearLayout
+        android:id="@+id/layoutAiSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_galaxy_summary_pill"
+        android:padding="12dp"
+        android:layout_marginTop="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="✨ AI Telephony Summary"
+                android:textColor="#E0AAFF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔴 URGENT"
+                android:textColor="#FF4D6D"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvAiSummaryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Urgent interview scheduled for tomorrow at 10 AM. Caller requested confirmation."
+            android:textColor="#F72585"
+            android:textSize="13sp"
+            android:lineSpacingExtra="2dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

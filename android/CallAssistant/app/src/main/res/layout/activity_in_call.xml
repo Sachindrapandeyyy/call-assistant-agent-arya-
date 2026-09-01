@@ -1,0 +1,552 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_dialer_dark_gradient">
+
+    <!-- Top Status Header -->
+    <LinearLayout
+        android:id="@+id/llTopHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="36dp">
+
+        <TextView
+            android:id="@+id/tvCallStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CALLING..."
+            android:textColor="#00D2B4"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.15" />
+
+        <TextView
+            android:id="@+id/tvCallTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textColor="#00D2B4"
+            android:textSize="14sp"
+            android:visibility="gone"
+            android:layout_marginTop="2dp" />
+    </LinearLayout>
+
+    <!-- 1. INCOMING CALL VIEW (Center Avatar + Big Name + Number) -->
+    <LinearLayout
+        android:id="@+id/llIncomingCenterView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="40dp"
+        android:visibility="visible">
+
+        <!-- Large Turquoise Avatar Circle -->
+        <FrameLayout
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:background="@drawable/bg_avatar_cyan_circle"
+            android:layout_marginBottom="24dp"
+            android:elevation="6dp">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_user_silhouette"
+                app:tint="#16141B" />
+
+            <TextView
+                android:id="@+id/tvAvatarInitials"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text=""
+                android:textColor="#16141B"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <!-- Cyan Phone Number -->
+        <TextView
+            android:id="@+id/tvCallerNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+91 98765 43210"
+            android:textColor="#00D2B4"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.04"
+            android:layout_marginBottom="6dp" />
+
+        <!-- Bold White Caller Name -->
+        <TextView
+            android:id="@+id/tvCallerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Louise Martinnez"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium" />
+    </LinearLayout>
+
+    <!-- 2. ACTIVE IN-CALL VIEW (Cyan Name Badge + 6-Grid White Action Icons) -->
+    <LinearLayout
+        android:id="@+id/llActiveCenterView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_below="@id/llTopHeader"
+        android:layout_above="@+id/llBottomContainer"
+        android:paddingHorizontal="24dp"
+        android:visibility="gone">
+
+        <!-- Cyan Caller Name Badge -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_cyan_badge"
+            android:paddingHorizontal="28dp"
+            android:paddingVertical="10dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/tvActiveCallerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Louise Martinnez"
+                android:textColor="#16141B"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+        <!-- 3 Cyan Indicator Dots -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="36dp">
+
+            <View
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:background="@drawable/bg_avatar_cyan_circle"
+                android:layout_marginHorizontal="4dp" />
+            <View
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:background="@drawable/bg_avatar_cyan_circle"
+                android:layout_marginHorizontal="4dp" />
+            <View
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:background="@drawable/bg_avatar_cyan_circle"
+                android:layout_marginHorizontal="4dp" />
+        </LinearLayout>
+
+        <!-- 2x3 Grid of Circular White Action Icons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Row 1: Message, Record (Aura AI), Mute -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="24dp">
+
+                <!-- 1. Message Action -->
+                <LinearLayout
+                    android:id="@+id/btnActionQuickSms"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/bg_action_circle_white"
+                        android:padding="16dp"
+                        android:src="@drawable/ic_action_message"
+                        android:elevation="4dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="message"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+
+                <!-- 2. Record (Aura AI Receptionist) -->
+                <LinearLayout
+                    android:id="@+id/btnActionTakeover"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/ivAiModeIcon"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/bg_action_circle_white"
+                        android:padding="16dp"
+                        android:src="@drawable/ic_action_record"
+                        android:elevation="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvAiModeText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="record"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+
+                <!-- 3. Mute Action -->
+                <LinearLayout
+                    android:id="@+id/btnActionMute"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/ivMuteIcon"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/bg_action_circle_white"
+                        android:padding="16dp"
+                        android:src="@drawable/ic_action_mute"
+                        android:elevation="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvMuteText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="mute"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Row 2: List (Speaker/Audio), Remind Me (Hold), Keyboard (Keypad) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <!-- 4. List / Audio Route Action -->
+                <LinearLayout
+                    android:id="@+id/btnActionAudioRoute"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/ivAudioRouteIcon"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/bg_action_circle_white"
+                        android:padding="16dp"
+                        android:src="@drawable/ic_action_list"
+                        android:elevation="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvAudioRouteText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="list"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+
+                <!-- 5. Remind Me / Hold Action -->
+                <LinearLayout
+                    android:id="@+id/btnActionHold"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/ivHoldIcon"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/bg_action_circle_white"
+                        android:padding="16dp"
+                        android:src="@drawable/ic_action_remind"
+                        android:elevation="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvHoldText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="remind me"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+
+                <!-- 6. Keyboard / DTMF Action -->
+                <LinearLayout
+                    android:id="@+id/btnActionKeypad"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/bg_action_circle_white"
+                        android:padding="16dp"
+                        android:src="@drawable/ic_action_keyboard"
+                        android:elevation="4dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="keyboard"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- In-Call Keypad (DTMF Overlay) -->
+    <LinearLayout
+        android:id="@+id/llDtmfOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:background="#1E1A26"
+        android:padding="20dp"
+        android:elevation="16dp">
+
+        <TextView
+            android:id="@+id/tvDtmfDisplay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="#00D2B4"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="3"
+            android:rowCount="4"
+            android:alignmentMode="alignMargins">
+
+            <Button android:id="@+id/btnDtmf1" style="@style/Widget.AppCompat.Button.Borderless" android:text="1" android:textColor="#FFF" android:textSize="22sp" android:layout_width="0dp" android:layout_columnWeight="1" />
+            <Button android:id="@+id/btnDtmf2" style="@style/Widget.AppCompat.Button.Borderless" android:text="2" android:textColor="#FFF" android:textSize="22sp" android:layout_width="0dp" android:layout_columnWeight="1" />
+            <Button android:id="@+id/btnDtmf3" style="@style/Widget.AppCompat.Button.Borderless" android:text="3" android:textColor="#FFF" android:textSize="22sp" android:layout_width="0dp" android:layout_columnWeight="1" />
+            <Button android:id="@+id/btnDtmf4" style="@style/Widget.AppCompat.Button.Borderless" android:text="4" android:textColor="#FFF" android:textSize="22sp" android:layout_width="0dp" android:layout_columnWeight="1" />
+            <Button android:id="@+id/btnDtmf5" style="@style/Widget.AppCompat.Button.Borderless" android:text="5" android:textColor="#FFF" android:textSize="22sp" android:layout_width="0dp" android:layout_columnWeight="1" />
+            <Button android:id="@+id/btnDtmf6" style="@style/Widget.AppCompat.Button.Borderless" android:text="6" android:textColor="#FFF" android:textSize="22sp" android:layout_width="0dp" android:layout_columnWeight="1" />
+            <Button android:id="@+id/btnDtmf7" style="@style/Widget.AppCompat.Button.Borderless" android:text="7" android:textColor="#FFF" android:textSize="22sp" android:layout_width="0dp" android:layout_columnWeight="1" />
+            <Button android:id="@+id/btnDtmf8" style="@style/Widget.AppCompat.Button.Borderless" android:text="8" android:textColor="#FFF" android:textSize="22sp" android:layout_width="0dp" android:layout_columnWeight="1" />
+            <Button android:id="@+id/btnDtmf9" style="@style/Widget.AppCompat.Button.Borderless" android:text="9" android:textColor="#FFF" android:textSize="22sp" android:layout_width="0dp" android:layout_columnWeight="1" />
+            <Button android:id="@+id/btnDtmfStar" style="@style/Widget.AppCompat.Button.Borderless" android:text="*" android:textColor="#FFF" android:textSize="22sp" android:layout_width="0dp" android:layout_columnWeight="1" />
+            <Button android:id="@+id/btnDtmf0" style="@style/Widget.AppCompat.Button.Borderless" android:text="0" android:textColor="#FFF" android:textSize="22sp" android:layout_width="0dp" android:layout_columnWeight="1" />
+            <Button android:id="@+id/btnDtmfHash" style="@style/Widget.AppCompat.Button.Borderless" android:text="#" android:textColor="#FFF" android:textSize="22sp" android:layout_width="0dp" android:layout_columnWeight="1" />
+        </GridLayout>
+
+        <Button
+            android:id="@+id/btnHideDtmf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Hide Keypad"
+            android:textColor="#00D2B4"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_marginTop="12dp" />
+    </LinearLayout>
+
+    <!-- BOTTOM CONTROLS CONTAINER -->
+    <FrameLayout
+        android:id="@+id/llBottomContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <!-- 1. Floating Pill For Incoming Calls -->
+        <LinearLayout
+            android:id="@+id/llIncomingRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="28dp"
+            android:layout_marginBottom="36dp"
+            android:background="@drawable/bg_incoming_pill_card"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="24dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:elevation="8dp"
+            android:visibility="visible">
+
+            <!-- Accept (Left) -->
+            <LinearLayout
+                android:id="@+id/btnAnswerContainer"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/btnAnswerCall"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_avatar_cyan_circle"
+                    android:padding="14dp"
+                    android:src="@drawable/ic_phone_call"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:elevation="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Accept"
+                    android:textColor="#00D2B4"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+            <!-- Decline (Right) -->
+            <LinearLayout
+                android:id="@+id/btnRejectContainer"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/btnRejectCall"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_circle_end_call"
+                    android:padding="14dp"
+                    android:src="@drawable/ic_close_cancel"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:elevation="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Decline"
+                    android:textColor="#FF5252"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 2. White Bottom Sheet Card For Active Calls -->
+        <LinearLayout
+            android:id="@+id/llActiveBottomCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_bottom_sheet_card"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="28dp"
+            android:elevation="12dp"
+            android:visibility="gone">
+
+            <!-- Cyan Full-Width Pill Button -->
+            <LinearLayout
+                android:id="@+id/btnEndCallContainer"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:background="@drawable/bg_cyan_pill_button"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:src="@drawable/ic_phone_call"
+                    app:tint="#FFFFFF"
+                    android:layout_marginEnd="10dp" />
+
+                <TextView
+                    android:id="@+id/tvBottomButtonText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="End Call"
+                    android:textColor="#FFFFFF"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Phone Number under the button -->
+            <TextView
+                android:id="@+id/tvBottomPhoneNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+91 98765 43210"
+                android:textColor="#16141B"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.04"
+                android:layout_marginTop="12dp" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+</RelativeLayout>
