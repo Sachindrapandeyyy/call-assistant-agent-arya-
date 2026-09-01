@@ -101,7 +101,10 @@ class HybridLLMClient:
                     "num_predict": max_tokens,
                     "temperature": temperature,
                     "top_p": 0.9,
-                    "stop": ["Caller:", "User:", "\n\n"]
+                    "repeat_penalty": 1.25,
+                    "frequency_penalty": 0.35,
+                    "presence_penalty": 0.25,
+                    "stop": ["Caller:", "User:", "\n\n", "AI:"]
                 }
             }
             res = self.ollama_client.post("/api/chat", json=payload)

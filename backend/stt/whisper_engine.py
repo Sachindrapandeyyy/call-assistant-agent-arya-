@@ -49,8 +49,8 @@ def clean_transcript(text: str) -> str:
     if not text:
         return ""
 
-    # Remove non-alphanumeric noise symbols
-    cleaned = re.sub(r'[\(\)\[\]\<\>\{\}\~\_\*]+', ' ', text)
+    # Remove non-alphanumeric noise symbols while preserving Latin, Devanagari Hindi, and Urdu/Arabic
+    cleaned = re.sub(r'[^\w\s\u0900-\u097F\u0600-\u06FF\.,\?\!\'\-]', ' ', text)
     # Remove repetitive character loops caused by audio line hum (e.g. जाएजाएजाए or abababab)
     cleaned = re.sub(r'(.{1,8})\1{3,}', r'\1', cleaned)
     cleaned = re.sub(r'\s+', ' ', cleaned).strip()
