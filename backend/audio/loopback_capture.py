@@ -78,6 +78,24 @@ class LoopbackCaptureEngine:
         self._barge_in_consecutive_chunks = 0
         self.vad.reset()
 
+    def append_assistant_playback(self, audio_data: np.ndarray, sample_rate: int = 48000):
+        """Appends AI assistant synthesized speech frames into the master recording WAV."""
+        if not self.is_running or audio_data is None or len(audio_data) == 0:
+            return
+        try:
+            mono = audio_data.flatten().astype(np.float32)
+            if sample_rate == 48000:
+                chunk_16k = signal.resample_poly(mono, 1, 3).astype(np.float32)
+            elif sample_rate != 16000:
+                chunk_16k = signal.resample_poly(mono, 16000, sample_rate).astype(np.float32)
+            else:
+                chunk_16k = mono
+
+            with self._recording_lock:
+                self.master_recording_frames.append(chunk_16k)
+        except Exception as e:
+            logger.debug(f"Assistant recording append note: {e}")
+
     def start(self, session_id: str):
         """Starts real-time loopback capture and VAD processing."""
         if self.is_running:

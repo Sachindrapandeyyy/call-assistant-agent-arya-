@@ -64,6 +64,14 @@ class CablePlayerEngine:
             try:
                 mono = audio_data.flatten().astype(np.float32)
 
+                # 0. Append assistant voice to master recording so WAV file has both caller + Arya
+                try:
+                    from backend.audio.session_manager import session_manager
+                    if session_manager.capture and session_manager.capture.is_running:
+                        session_manager.capture.append_assistant_playback(mono, source_sample_rate)
+                except Exception as rec_err:
+                    logger.debug(f"Note on assistant recording append: {rec_err}")
+
                 # 1. Play to direct Infinix Bluetooth endpoint if present
                 self._resolve_infinix_device()
                 if self._cached_infinix_idx is not None:

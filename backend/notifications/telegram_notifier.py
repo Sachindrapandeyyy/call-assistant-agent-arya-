@@ -63,7 +63,29 @@ class TelegramNotifier:
 
         urgency_emoji = "🚨" if urgency in ["High", "Urgent"] else "📞"
 
-        text = (
+        # Build clean, readable turn-by-turn dialogue transcript
+        transcript_formatted = ""
+        if transcript and len(transcript.strip()) > 5:
+            lines = []
+            for line in transcript.strip().split("\n"):
+                if line.startswith("AI Assistant:"):
+                    clean_line = line.replace("AI Assistant:", "").strip()
+                    lines.append(f"🤖 <b>Arya:</b> {html.escape(clean_line)}")
+                elif line.startswith("Caller:"):
+                    clean_line = line.replace("Caller:", "").strip()
+                    lines.append(f"👤 <b>Caller:</b> {html.escape(clean_line)}")
+                else:
+                    lines.append(html.escape(line))
+            
+            transcript_body = "\n".join(lines)
+            transcript_formatted = (
+                f"\n💬 <b>Full Conversation Transcript:</b>\n"
+                f"━━━━━━━━━━━━━━━━━━━━\n"
+                f"{transcript_body}\n"
+                f"━━━━━━━━━━━━━━━━━━━━"
+            )
+
+        summary_card = (
             f"{urgency_emoji} <b>AI CALL SUMMARY — Sachindra</b>\n"
             f"━━━━━━━━━━━━━━━━━━━━\n"
             f"👤 <b>Caller:</b> {caller_name} ({caller_num})\n"
@@ -77,29 +99,42 @@ class TelegramNotifier:
             f"━━━━━━━━━━━━━━━━━━━━\n"
         )
 
+        full_message = summary_card + transcript_formatted
+
         try:
-            with httpx.Client(timeout=10.0) as client:
-                # 1. Send formatted text summary
-                res = client.post(
-                    f"{self.base_url}/sendMessage",
-                    json={
-                        "chat_id": self.chat_id,
-                        "text": text,
-                        "parse_mode": "HTML"
-                    }
-                )
-                if res.status_code == 200:
-                    logger.info(f"Sent call summary to Telegram chat {self.chat_id}")
+            with httpx.Client(timeout=15.0) as client:
+                # 1. Send formatted text summary (with transcript)
+                if len(full_message) <= 4000:
+                    res = client.post(
+                        f"{self.base_url}/sendMessage",
+                        json={
+                            "chat_id": self.chat_id,
+                            "text": full_message,
+                            "parse_mode": "HTML"
+                        }
+                    )
+                    if res.status_code == 200:
+                        logger.info(f"Sent call summary & transcript to Telegram chat {self.chat_id}")
                 else:
-                    logger.error(f"Telegram API error {res.status_code}: {res.text}")
-                    return False
+                    # If conversation was very long (>4000 chars), send summary first then transcript
+                    client.post(
+                        f"{self.base_url}/sendMessage",
+                        json={"chat_id": self.chat_id, "text": summary_card, "parse_mode": "HTML"}
+                    )
+                    for i in range(0, len(transcript_formatted), 3800):
+                        chunk = transcript_formatted[i:i + 3800]
+                        client.post(
+                            f"{self.base_url}/sendMessage",
+                            json={"chat_id": self.chat_id, "text": chunk, "parse_mode": "HTML"}
+                        )
+                    logger.info(f"Sent multi-part call summary & transcript to Telegram chat {self.chat_id}")
 
                 # 2. Send audio recording file if available
                 if audio_path and Path(audio_path).exists() and Path(audio_path).stat().st_size > 1024:
                     with open(str(audio_path), "rb") as f:
                         client.post(
                             f"{self.base_url}/sendAudio",
-                            data={"chat_id": self.chat_id, "caption": f"Recording: {caller_name} ({caller_number})"},
+                            data={"chat_id": self.chat_id, "caption": f"🎙️ Call Recording: {caller_name} ({caller_number})"},
                             files={"audio": (audio_path.name, f, "audio/wav")}
                         )
                         logger.info(f"Sent audio recording {audio_path.name} to Telegram.")
